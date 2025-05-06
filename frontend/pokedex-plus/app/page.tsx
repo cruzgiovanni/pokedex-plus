@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import Link from "next/link"
+import Image from "next/image"
 
 interface Pokemon {
   name: string
   id: number
-  type: string
+  type: string[]
   image: string
 }
 
@@ -39,13 +40,18 @@ const Home = () => {
             key={pokemon.id}
             className="bg-white shadow-md rounded-lg p-4 text-center"
           >
-            <img
+            <Image
               src={pokemon.image}
               alt={pokemon.name}
+              width={128}
+              height={128}
               className="w-32 h-32 mx-auto mb-4"
+              priority
             />
-            <h2 className="text-xl font-semibold">{pokemon.name}</h2>
-            <p className="text-sm text-gray-600">{pokemon.type}</p>
+            <h2 className="text-xl font-semibold text-black">
+              {pokemon.name.toUpperCase()}
+            </h2>
+            <p className="text-sm text-gray-600">{pokemon.type.join(", ")}</p>
             <Link href={`/pokemon/${pokemon.name}`} className="text-blue-500">
               View Details
             </Link>
