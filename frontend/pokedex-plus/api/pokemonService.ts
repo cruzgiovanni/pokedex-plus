@@ -21,8 +21,8 @@ export const getPokemonDetails = async (name: string): Promise<Pokemon> => {
     type: data.type,
     height: data.height,
     weight: data.weight,
-    baseExperience: data.baseExperience,
     image: data.image,
+    abilities: [],
   }
 
   return pokemon
