@@ -1,9 +1,9 @@
 services:
   backend:
-    # image: pokedex-plus-backend:latest
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: eugiovannicruz/pokedex-plus-backend:latest
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
     container_name: backend
     environment:
       - PORT=${PORT}
@@ -14,10 +14,10 @@ services:
       - app-network
 
   frontend:
-    # image: pokedex-plus-frontend:latest
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: eugiovannicruz/pokedex-plus-frontend:latest
+    # build:
+    #   context: ./frontend
+    #   dockerfile: Dockerfile
     container_name: frontend
     restart: always
     ports:
