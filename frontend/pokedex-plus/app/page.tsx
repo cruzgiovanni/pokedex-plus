@@ -46,7 +46,7 @@ const Home = () => {
         setHasMore(currentPage < (response.totalPages || 1))
       } catch (error) {
         console.error("Error fetching pokemons", error)
-        setError("Erro ao carregar Pokémons. Tente novamente.")
+        setError("Error fetching pokemons. Please try again.")
       } finally {
         setLoading(false)
       }
