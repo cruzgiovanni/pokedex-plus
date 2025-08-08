@@ -3,9 +3,31 @@ import axios from "axios"
 
 const BASE_URL = "http://localhost:5000/api/pokemon"
 
-export const getAllPokemons = async (): Promise<Pokemon[]> => {
-  const response = await axios.get<{ data: Pokemon[] }>(BASE_URL)
-  return response.data.data
+export const getAllPokemons = async (params?: {
+  page?: number
+  limit?: number
+  type?: string
+}): Promise<{
+  data: Pokemon[]
+  page: number
+  limit: number
+  total: number
+  totalPages: number
+}> => {
+  const queryParams = new URLSearchParams()
+  if (params?.page) queryParams.append("page", params.page.toString())
+  if (params?.limit) queryParams.append("limit", params.limit.toString())
+  if (params?.type) queryParams.append("type", params.type)
+
+  const url = queryParams.toString() ? `${BASE_URL}?${queryParams}` : BASE_URL
+  const response = await axios.get<{
+    data: Pokemon[]
+    page: number
+    limit: number
+    total: number
+    totalPages: number
+  }>(url)
+  return response.data
 }
 
 export const getPokemonDetails = async (name: string): Promise<Pokemon> => {
@@ -23,6 +45,7 @@ export const getPokemonDetails = async (name: string): Promise<Pokemon> => {
     weight: data.weight,
     image: data.image,
     abilities: [],
+    notFound: false,
   }
 
   return pokemon

@@ -1,11 +1,13 @@
 export interface Pokemon {
-  id: number;
-  name: string;
-  type: string[];
-  height: number;
-  weight: number;
-  image: string;
-  abilities: string[]; // Added abilities property
+  // baseExperience: number
+  notFound: boolean
+  id: number
+  name: string
+  type: string[]
+  height: number
+  weight: number
+  image: string
+  abilities: string[] // Added abilities property
 }
 
 export type PokemonType =

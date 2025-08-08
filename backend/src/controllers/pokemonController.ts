@@ -20,9 +20,12 @@ export const getPokemon = async (
 
     const { _id, __v, ...cleanedPokemon } = pokemon
     res.json(cleanedPokemon)
-  } catch (error) {
-    console.error("Error fetching Pokémon data:", error)
-    res.status(500).json({ error: "Internal server error" })
+  } catch (error: any) {
+    if (error.response?.status === 404) {
+      res.status(404).json({ error: "Pokémon not founded" })
+    } else {
+      res.status(500).json({ error: "Internal server error" })
+    }
   }
 }
 
