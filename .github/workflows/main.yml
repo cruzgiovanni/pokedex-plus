@@ -1,62 +1,84 @@
-name: CI
+name: Release
 
 on:
   push:
     branches: [main]
-  release:
-    types: [published] # on release also
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
 
 jobs:
-  docker-build:
+  release:
+    name: Semantic Release + Docker
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4.2.2
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+
+      - name: Semantic Release
+        id: semrel
+        uses: cycjimmy/semantic-release-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          extra_plugins: |
+            @semantic-release/commit-analyzer
+            @semantic-release/release-notes-generator
+            @semantic-release/changelog
+            @semantic-release/github
+            @semantic-release/git
+
+      - name: Extract version parts
+        id: version
+        if: steps.semrel.outputs.new_release_published == 'true'
+        shell: bash
+        run: |
+          echo "version=${{ steps.semrel.outputs.new_release_version }}" >> $GITHUB_OUTPUT
+          ver='${{ steps.semrel.outputs.new_release_version }}'
+          major=$(echo "$ver" | awk -F. '{print $1}')
+          minor=$(echo "$ver" | awk -F. '{print $2}')
+          echo "major=$major" >> $GITHUB_OUTPUT
+          echo "minor=$minor" >> $GITHUB_OUTPUT
 
       - name: Docker Login
+        if: steps.semrel.outputs.new_release_published == 'true'
         uses: docker/login-action@v3.5.0
         with:
           username: ${{ secrets.DOCKER_HUB_USER }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
 
       # --- BACKEND ---
-      - name: Docker Metadata (Backend)
-        id: meta-back
-        uses: docker/metadata-action@v5.8.0
-        with: 
-          images: eugiovannicruz/pokedex-plus-backend
-          tags: |
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=raw,value=latest,enable=${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'release' && github.event.release.prerelease == false) }}
-      
       - name: Build & Push Backend
+        if: steps.semrel.outputs.new_release_published == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./backend
           push: true
-          tags: ${{ steps.meta-back.outputs.tags }}
-          labels: ${{ steps.meta-back.outputs.labels }}
+          tags: |
+            eugiovannicruz/pokedex-plus-backend:${{ steps.version.outputs.version }}
+            eugiovannicruz/pokedex-plus-backend:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+            eugiovannicruz/pokedex-plus-backend:${{ steps.version.outputs.major }}
+            eugiovannicruz/pokedex-plus-backend:latest
 
       # --- FRONTEND ---
-      - name: Docker Metadata (Frontend)
-        id: meta-front
-        uses: docker/metadata-action@v5.8.0
-        with: 
-          images: eugiovannicruz/pokedex-plus-frontend
-          tags: |
-            type=ref,event=tag
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=raw,value=latest,enable=${{ (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'release' && github.event.release.prerelease == false) }}
-      
       - name: Build & Push Frontend
+        if: steps.semrel.outputs.new_release_published == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./frontend/pokedex-plus
           push: true
-          tags: ${{ steps.meta-front.outputs.tags }}
-          labels: ${{ steps.meta-front.outputs.labels }}
+          tags: |
+            eugiovannicruz/pokedex-plus-frontend:${{ steps.version.outputs.version }}
+            eugiovannicruz/pokedex-plus-frontend:${{ steps.version.outputs.major }}.${{ steps.version.outputs.minor }}
+            eugiovannicruz/pokedex-plus-frontend:${{ steps.version.outputs.major }}
+            eugiovannicruz/pokedex-plus-frontend:latest
