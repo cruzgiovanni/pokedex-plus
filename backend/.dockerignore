@@ -1,0 +1,34 @@
+# Local dependencies (reinstalled inside the container)
+node_modules
+
+# Build output generated inside the container
+dist
+
+# Logs & diagnostics
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs
+*.log
+
+# Env / secrets
+.env
+.env.*
+
+# Version control / metadata
+.git
+.gitignore
+
+# IDE / editor settings
+.vscode
+.idea
+
+# System / infrastructure
+Dockerfile*
+docker-compose*.yml
+*.swp
+*~
+
+# OS specific / system artifacts
+Thumbs.db
+.DS_Store
