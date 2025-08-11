@@ -24,8 +24,6 @@ logs
 .idea
 
 # System / infrastructure
-Dockerfile*
-docker-compose*.yml
 *.swp
 *~
 
