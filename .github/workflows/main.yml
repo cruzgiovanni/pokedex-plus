@@ -1,7 +1,9 @@
 name: Release
 
 on:
-  push:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -15,6 +17,11 @@ jobs:
     name: Semantic Release + Docker
     runs-on: ubuntu-latest
     steps:
+      - name: Ensure CI succeeded
+        if: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.conclusion != 'success' }}
+        run: |
+          echo "Required CI workflow did not succeed. Aborting release."
+          exit 1
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -34,9 +41,7 @@ jobs:
           extra_plugins: |
             @semantic-release/commit-analyzer
             @semantic-release/release-notes-generator
-            @semantic-release/changelog
             @semantic-release/github
-            @semantic-release/git
             conventional-changelog-conventionalcommits
 
       - name: Extract version parts
