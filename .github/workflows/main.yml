@@ -37,6 +37,7 @@ jobs:
             @semantic-release/changelog
             @semantic-release/github
             @semantic-release/git
+            conventional-changelog-conventionalcommits
 
       - name: Extract version parts
         id: version
