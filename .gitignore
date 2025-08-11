@@ -23,7 +23,7 @@ node_modules/
 .npm
 
 # Docker
-.dockerignore
+# .dockerignore
 
 # IDE
 .vscode/
