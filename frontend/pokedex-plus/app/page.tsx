@@ -54,7 +54,6 @@ const Home = () => {
     [loading]
   )
 
-  // Scroll infinito
   const handleScroll = useCallback(() => {
     if (
       window.innerHeight + document.documentElement.scrollTop + 1000 >=
@@ -69,7 +68,6 @@ const Home = () => {
     }
   }, [hasMore, loading, page, fetchPokemons, searchTerm])
 
-  // Busca local
   useEffect(() => {
     if (!searchTerm) {
       setFilteredPokemons(pokemons)
@@ -136,7 +134,7 @@ const Home = () => {
       {!loading && filteredPokemons.length === 0 && !error && (
         <div className="text-center text-gray-500 mt-12">
           <p className="text-xl mb-2">No Pokemon found</p>
-          {searchTerm && <p>Try searching for another name</p>}
+          {searchTerm && <p>Try searching for another pokemon name</p>}
         </div>
       )}
 
