@@ -5,7 +5,6 @@ interface Props {
   pokemon: Pokemon
 }
 
-// Função para definir cores dos tipos (mesma do PokemonCard)
 const getTypeColor = (type: string): string => {
   const typeColors: { [key: string]: string } = {
     fire: "from-red-400 to-orange-500",
