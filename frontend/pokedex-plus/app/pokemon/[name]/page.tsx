@@ -61,7 +61,7 @@ const PokemonDetails = () => {
     )
   }
 
-  // Aqui, se chegou, já tem pokemon válido
+  // If it reaches here, it means the pokemon is valid
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold text-center mb-6">{pokemon?.name}</h1>

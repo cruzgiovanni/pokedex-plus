@@ -43,7 +43,7 @@ export const getAllPokemons = async (
 
     if (typeQuery) {
       const types = typeQuery.split(",").map((t) => t.trim())
-      // Usa $in para buscar qualquer Pokémon que tenha um dos tipos informados
+
       filter = { type: { $in: types } }
     }
 
